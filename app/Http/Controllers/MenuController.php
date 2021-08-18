@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Models\MenuItem;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MenuController extends BaseController
 {
@@ -95,6 +97,15 @@ class MenuController extends BaseController
      */
 
     public function getMenuItems() {
-        throw new \Exception('implement in coding task 3');
+        //throw new \Exception('implement in coding task 3');
+        DB::connection()->enableQueryLog();
+
+        $menuItems = MenuItem::whereNull('parent_id')
+            ->with('children')
+            ->get()->toArray();
+
+        Log::debug('DB sql: ', DB::getQueryLog());
+
+        Log::info('yes', $menuItems);
     }
 }
